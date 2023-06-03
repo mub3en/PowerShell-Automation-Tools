@@ -1,4 +1,16 @@
-﻿Add-Type -AssemblyName System.Windows.Forms
+﻿#Change Set Execution policy if unable to execute the script.
+#Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+
+############################################################
+#Uncomment this block and provide correct parameters if Powershell is not configured locally or in cloud.
+# Import the Azure module
+#Import-Module Az
+
+# Set your Azure subscription
+#Set-AzContext -SubscriptionId "YOUR_SUBSCRIPTION_ID"
+############################################################
+
+Add-Type -AssemblyName System.Windows.Forms
 
 # Create a new instance of a form
 $form = New-Object System.Windows.Forms.Form

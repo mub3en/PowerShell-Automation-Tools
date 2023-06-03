@@ -1,8 +1,14 @@
-﻿# Import the Azure module
-#Import-Module Az
+﻿#Change Set Execution policy if unable to execute the script.
+#Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
-# Set your Azure subscription
-#Set-AzContext -SubscriptionId "YOUR_SUBSCRIPTION_ID"
+# ############################################################
+# #Uncomment this block and provide correct parameters if Powershell is not configured locally or in cloud.
+# # Import the Azure module
+# Import-Module Az
+
+# # Set your Azure subscription
+# Set-AzContext -SubscriptionId "YOUR_SUBSCRIPTION_ID"
+# ############################################################
 
 # Prompt the user for the resource group name to delete
 $resourceGroupName = Read-Host -Prompt "Enter the name of the resource group to delete"
