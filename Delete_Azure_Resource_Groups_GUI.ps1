@@ -1,5 +1,6 @@
 ﻿#Change Set Execution policy if unable to execute the script.
-#Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+#Set-ExecutionPolicy -ExecutionPolicy Unrestricted
 
 ############################################################
 #Uncomment this block and provide correct parameters if Powershell is not configured locally or in cloud.
@@ -10,6 +11,10 @@
 #Set-AzContext -SubscriptionId "YOUR_SUBSCRIPTION_ID"
 ############################################################
 
+#Import modules from functions.psm1
+$modulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Modules\functions.psm1'
+Import-Module -Name $modulePath #-Verbose
+
 Add-Type -AssemblyName System.Windows.Forms
 
 # Create a new instance of a form
@@ -19,34 +24,23 @@ $form = New-Object System.Windows.Forms.Form
 $form.Text = "Azure Resource Groups"
 $form.Size = New-Object System.Drawing.Size(400, 300)
 
-# Create a label for the banner
-$bannerLabel = New-Object System.Windows.Forms.Label
-$bannerLabel.Text = "Select a group"
-$bannerLabel.Location = New-Object System.Drawing.Point(100, 10)
-$bannerLabel.Size = New-Object System.Drawing.Size(200, 40)
+# Create a label for the banner. Provide -LabelText & -LabelLocation parameters.
+$bannerLabel = New-FormLabel -LabelText "Select a Resource Group" -LabelLocation (New-Object System.Drawing.Point(70, 10))
 
 # Set the font to bold
-$font = New-Object System.Drawing.Font($bannerLabel.Font, [System.Drawing.FontStyle]::Bold)
-$bannerLabel.Font = $font
+$bannerLabel.Font = New-Object System.Drawing.Font($bannerLabel.Font, [System.Drawing.FontStyle]::Bold)
 
 $form.Controls.Add($bannerLabel)
-
-# Create a drop-down list control
-$dropDownList = New-Object System.Windows.Forms.ComboBox
-$dropDownList.Location = New-Object System.Drawing.Point(100, 50)
-$dropDownList.Size = New-Object System.Drawing.Size(200, 20)
-$dropDownList.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
 
 # Collect resource group names using Get-AzResourceGroup
 $resourceGroups = Get-AzResourceGroup | Select-Object -ExpandProperty ResourceGroupName
 
-# Add resource group names to the drop-down list
-$dropDownList.Items.AddRange($resourceGroups)
+$dropDownList = New-FormDropDownList -DropDownLocation (New-Object System.Drawing.Point(70, 30)) -DropDownItems @($resourceGroups)
 
 # Define the event handler for the drop-down list selection change
 $dropDownList.Add_SelectedIndexChanged({
     $selectedItem = $dropDownList.SelectedItem.ToString()
-    $bannerLabel.Text = "SELECTED: $selectedItem"
+    $bannerLabel.Text = "Selected: $selectedItem"
     
     # Prompt for confirmation to delete the resource group
     $result = [System.Windows.Forms.MessageBox]::Show("Are you sure you want to delete the resource group '$selectedItem'?", "Confirmation", [System.Windows.Forms.MessageBoxButtons]::YesNo)
@@ -63,7 +57,7 @@ $dropDownList.Add_SelectedIndexChanged({
             [System.Windows.Forms.MessageBox]::Show("Resource group '$selectedItem' has been successfully deleted.", "Deletion Success")
             
             #Update banner with the default text
-            $bannerLabel.Text = "Select a group"
+            $bannerLabel.Text = "Select a Resource Group"
 
             # Update the drop-down list by removing the deleted resource group
             $dropDownList.Items.Remove($selectedItem)

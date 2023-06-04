@@ -1,5 +1,5 @@
 ﻿#Change Set Execution policy if unable to execute the script.
-#Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 
 ############################################################
 #Uncomment this block and provide correct parameters if Powershell is not configured locally or in cloud.
