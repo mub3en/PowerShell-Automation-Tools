@@ -148,6 +148,17 @@ function New-AzureSqlServerFunc {
     New-AzSqlServer -ResourceGroupName $ResourceGroupName -ServerName $ServerName -Location $Location -SqlAdministratorCredentials $Credential
 }
 
+function New-AzureSqlDataBaseFunc {
+    param (
+        [string]$ResourceGroupName,
+        [string]$ServerName,
+        [string]$DataBaseName,
+        [string]$DBEdition
+    )
+    
+    New-AzSqlDatabase -ResourceGroupName $ResourceGroupName -ServerName $ServerName -DatabaseName $DataBaseName -Edition $DBEdition
+}
 
 
-Export-ModuleMember -Function 'New-FormLabel', 'New-FormDropDownList', 'New-TextInputField', 'New-AzureSqlServerFunc'
+
+Export-ModuleMember -Function 'New-FormLabel', 'New-FormDropDownList', 'New-TextInputField', 'New-AzureSqlServerFunc', 'New-AzureSqlDataBaseFunc'
