@@ -224,27 +224,29 @@ $buttonPreviewConfig.Add_Click({
     -or [string]::IsNullOrEmpty($global:enteredServerName) -or [string]::IsNullOrEmpty($global:enteredUserName) `
     -or [string]::IsNullOrEmpty($global:enteredPwd) -or [string]::IsNullOrEmpty($global:enteredSQLDB) `
     -or [string]::IsNullOrEmpty($global:selectedDBEdition)){
+        $msg = $null;
         if ([string]::IsNullOrEmpty($global:selectedResGrp)) {
-            [System.Windows.Forms.MessageBox]::Show("Resource Group must be selected.", "Error")
+            $msg += "* Resource Group must be selected";
         }
         if ([string]::IsNullOrEmpty($global:selectedLocation)) {
-            [System.Windows.Forms.MessageBox]::Show("Location must be selected.", "Error")
+            $msg += "`n* Location must be selected.";
         }
         if ([string]::IsNullOrEmpty($global:enteredServerName)) {
-            [System.Windows.Forms.MessageBox]::Show("Server Name cannot be empty.", "Error")
+            $msg += "`n* Server Name cannot be empty.";
         }
         if ([string]::IsNullOrEmpty($global:enteredUserName)) {
-            [System.Windows.Forms.MessageBox]::Show("User Name cannot be empty.", "Error")
+            $msg += "`n* User Name cannot be empty.";
         }
         if ([string]::IsNullOrEmpty($global:enteredPwd)) {
-            [System.Windows.Forms.MessageBox]::Show("Password cannot be empty/invalid.", "Error")
+            $msg += "`n* Password cannot be empty/invalid.";
         }
         if ([string]::IsNullOrEmpty($global:enteredSQLDB)) {
-            [System.Windows.Forms.MessageBox]::Show("SQL Database Name cannot be empty.", "Error")
+            $msg += "`n* SQL Database Name cannot be empty.";
         }
         if ([string]::IsNullOrEmpty($global:selectedDBEdition)) {
-            [System.Windows.Forms.MessageBox]::Show("SQL Database Edition must be selected.", "Error")
+            $msg += "`n* SQL Database Edition must be selected.";
         }
+        [System.Windows.Forms.MessageBox]::Show($msg, "Error")
     }else{
         $result = [System.Windows.Forms.MessageBox]::Show($serverString, "Configuration Preview", $messageBoxButtons, $messageBoxIcon)
     }
@@ -273,7 +275,7 @@ $buttonPreviewConfig.Add_Click({
                 [System.Windows.Forms.MessageBox]::Show("Server created successfully! SQL Database is now getting created..", "Information")
                 try {
                     $databaseCreating = New-AzureSqlDataBaseFunc -ResourceGroupName $global:selectedResGrp -ServerName $global:enteredServername -DatabaseName $global:enteredSQLDB -Edition $global:selectedDBEdition
-                    
+                    # Check if the database was created successfully
                     if ($databaseCreating) {
                         [System.Windows.Forms.MessageBox]::Show("SQL Database created Successfully.", "Information")
                     } else {
