@@ -1,8 +1,8 @@
 #Setting execution policy to 'ByPass'
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 # Set-ExecutionPolicy -ExecutionPolicy Unrestricted
-#Importing modules
-$modulePath = Join-Path -Path $PSScriptRoot -ChildPath 'Modules\functions.psm1'
+#Importing modules/functions
+$modulePath = Join-Path -Path $PSScriptRoot -ChildPath 'src\Functions\functions.psm1'
 Import-Module -Name $modulePath #-Verbose
 Add-Type -AssemblyName System.Windows.Forms
 
