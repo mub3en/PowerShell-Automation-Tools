@@ -11,6 +11,13 @@ Before running this script, ensure that you have met the following requirements:
 - SQL Server Management Studio or SQL Server command-line tools installed.
 - Access to the target SQL Server database.
 
+## Dependencies
+
+The dependencies modules are saved inside /src/Modules
+For the latest modules you can refer to:
+- [SQL Server](https://www.powershellgallery.com/packages/SqlServer/22.1.1) 
+- [Requirements](https://www.powershellgallery.com/packages/Requirements/2.3.6)
+
 ## Getting Started
 
 1. Clone or download the script files to your local machine.
