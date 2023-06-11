@@ -3,4 +3,5 @@ These are the tools that help with the automation of small tasks. Each environme
 
 ## Available tools list
 1. Azure
-2. SQL Server & Databases
+2. Windows
+3. SQL Server & Databases
