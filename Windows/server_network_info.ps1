@@ -15,27 +15,29 @@ Push-Location $PSScriptRoot
 $moduleNames = @(
     "\src\Functions\Display.ps1",
     "\src\Functions\Output.ps1",
-    "\src\Functions\Software-Installed.ps1"
+    "\src\Functions\Network.ps1"
 )
 
 $moduleNames | ForEach-Object {
     $modulePath = Join-Path -Path $PSScriptRoot -ChildPath $_
     Import-Module -Name $modulePath
-} 
+}
 
-#call Get-InstalledSoftware function
-$output = Get-InstalledSoftware -DisplayFunction DisplayTable
+# Get OS information
+$ntwk = Get-NetworkInformation
 
-# Display the output on the host
-$output
+# Display the hardware information in tabular form
+DisplayTable "Network Information" $ntwk
 
 # Save the output to a text file
-$outputPath = "${PSScriptRoot}\output\Software Info.txt"
+$outputPath = "${PSScriptRoot}\output\Network Info.txt"
 $outputContent = @"
-List of installed softwares
+Network Information
 ----------------------
 
-$($output | Out-String)
+$($ntwk | Out-String)
 "@
+
 Save-OutputToFile $outputPath $outputContent
+
 Write-Host "Output saved to: $outputPath"

@@ -1,7 +1,7 @@
 # PowerShell-Automation-Tools
-These are the tools that help with the automation of small tasks. Each environment is separated in its own folder. 
+This repository contains a collection of tools designed to streamline the automation of various small tasks. Each tool is organized within its own folder based on the target environment. 
 
-## Available tools list
+## List of Available Tools
 1. Azure
-2. Windows
-3. SQL Server & Databases
+2. SQL Server & Databases
+3. Windows

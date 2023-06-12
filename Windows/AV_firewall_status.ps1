@@ -15,27 +15,35 @@ Push-Location $PSScriptRoot
 $moduleNames = @(
     "\src\Functions\Display.ps1",
     "\src\Functions\Output.ps1",
-    "\src\Functions\Software-Installed.ps1"
+    "\src\Functions\AV-Firewall.ps1"
 )
 
 $moduleNames | ForEach-Object {
     $modulePath = Join-Path -Path $PSScriptRoot -ChildPath $_
     Import-Module -Name $modulePath
-} 
+}
 
-#call Get-InstalledSoftware function
-$output = Get-InstalledSoftware -DisplayFunction DisplayTable
+# Get and Display Antivirus Status
+if ($av = Get-AntivirusStatus) {
+    Write-Host "Antivirus Enabled     : $($av.IsEnabled)"
+    Write-Host "Antivirus Up-to-date  : $($av.IsUpToDate)"
+}
 
-# Display the output on the host
-$output
+# # Get Firewall information
+$fw = Get-FirewallStatus
+DisplayTable "Firewall Information" $fw
+
 
 # Save the output to a text file
-$outputPath = "${PSScriptRoot}\output\Software Info.txt"
+$outputPath = "${PSScriptRoot}\output\Firewall and Antivirus status.txt"
 $outputContent = @"
-List of installed softwares
-----------------------
+Antivirus Status
+$(Get-AntivirusStatus | Out-String)
 
-$($output | Out-String)
+Firewall information
+$($fw | Out-String)
 "@
+
 Save-OutputToFile $outputPath $outputContent
+
 Write-Host "Output saved to: $outputPath"

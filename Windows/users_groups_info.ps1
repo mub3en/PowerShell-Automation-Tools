@@ -15,27 +15,34 @@ Push-Location $PSScriptRoot
 $moduleNames = @(
     "\src\Functions\Display.ps1",
     "\src\Functions\Output.ps1",
-    "\src\Functions\Software-Installed.ps1"
+    "\src\Functions\User-Group.ps1"
 )
 
 $moduleNames | ForEach-Object {
     $modulePath = Join-Path -Path $PSScriptRoot -ChildPath $_
     Import-Module -Name $modulePath
-} 
+}
 
-#call Get-InstalledSoftware function
-$output = Get-InstalledSoftware -DisplayFunction DisplayTable
+# Get users and groups information
+$u = Get-Users
+$g = Get-Groups
+DisplayTable "Users Information" $u
+DisplayTable "Groups Information" $g
 
-# Display the output on the host
-$output
 
 # Save the output to a text file
-$outputPath = "${PSScriptRoot}\output\Software Info.txt"
+$outputPath = "${PSScriptRoot}\output\Users and Groups Info.txt"
 $outputContent = @"
-List of installed softwares
-----------------------
+Users and Groups
+----------------
 
-$($output | Out-String)
+Users information
+$($u | Out-String)
+
+Groups information
+$($g | Out-String)
 "@
+
 Save-OutputToFile $outputPath $outputContent
+
 Write-Host "Output saved to: $outputPath"

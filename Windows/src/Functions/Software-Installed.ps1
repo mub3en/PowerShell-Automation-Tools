@@ -8,7 +8,7 @@ function Get-InstalledSoftware {
         [string]$OutputFilePath
     )
 
-    $software = Get-WmiObject -Class Win32_Product
+    $software = Get-WmiObject -Class Win32_Product | Select-Object Name, Version, Vendor, InstallDate
     $output = & $DisplayFunction "Installed Software" $software
 
     return $output
