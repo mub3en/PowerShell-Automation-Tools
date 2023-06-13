@@ -73,3 +73,59 @@ function Get-SqlServerInfo {
         SQLServerInstance = $SQLServerInstance
     }
 }
+
+function ConvertToHtmlTable {
+    param(
+        [Parameter(Mandatory = $true, Position = 0, HelpMessage = "The label of the report.")]
+        [string]$ReportLabel,
+
+        [Parameter(Mandatory = $true, Position = 1, HelpMessage = "The DataTable containing the data.")]
+        [System.Data.DataTable]$DataTable,
+
+        [Parameter(Mandatory = $true, Position = 2, HelpMessage = "The output file path for the HTML file.")]
+        [string]$OutputFilePath
+    )
+
+    $htmlContent = "<head><style>"
+    $htmlContent += "table, td, th {"
+    $htmlContent += "border: 1px solid;"
+    $htmlContent += "padding: 10px;"
+    $htmlContent += "}"
+    $htmlContent += "table {"
+    $htmlContent += "text-align: center;"
+    $htmlContent += "}"
+    $htmlContent += "</style></head>"
+    $htmlContent += "<body>"
+    $htmlContent += "<div ><h1 text-align=`"center`">$ReportLabel</h1></div>"
+    $htmlContent += "<table borderColor=`"#111111`" border=`"1`">"
+    $htmlContent += "<thead>"
+    $htmlContent += "<tr bgcolor=`"#99CC33`">"
+    $htmlContent += ($DataTable.Columns.ColumnName | ForEach-Object {"<th>$($_)</th>"}) -Join ""
+    $htmlContent += "</tr>"
+    $htmlContent += "</thead>"
+    $htmlContent += "<tbody>"
+    foreach ($row in $DataTable.Rows) {
+        $htmlContent += "<tr>"
+        $rowValues = $row.ItemArray | ForEach-Object { "<td>$_</td>" }
+        $htmlContent += $rowValues -join ""
+        $htmlContent += "</tr>"
+    }
+    $htmlContent += "</tbody>"
+    $htmlContent += "</table>"
+    $htmlContent += "</body>"
+
+
+    $htmlContent | Out-File -FilePath $OutputFilePath
+
+    <#
+    # If we dont mention -OutputAs inside Invoke-SqlCmd, we will have to format the object System.Data appropriatley to get column and header data.
+    #$htmlContent += ( $scriptOutPut[0].PSObject.Properties | Where-Object {$_.Name -notin ('MaximumSectionSize', 'RowError', 'RowState', 'Table','ItemArray', 'HasErrors')} |  ForEach-Object {"<th>$($_.Name)</th>"}) -Join ""
+    #         $htmlContent += "</tr>"
+    #         foreach ($row in $scriptOutPut) {
+    #             $htmlContent += "<tr>"
+    #             $htmlContent += ($row.PSObject.Properties | Where-Object {$_.Name -eq 'ItemArray'} | ForEach-Object { "<td>$($_.Value)</td>" }) -Join ""
+    #             $htmlContent += "</tr>"
+    #         }
+    #>
+}
+

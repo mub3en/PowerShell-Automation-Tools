@@ -35,32 +35,41 @@ $moduleNames | ForEach-Object {
 #Import Custom Modules/Functions
 Import-Module -Name "${PSScriptRoot}\src\Functions\Functions.ps1"
 
+$timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+
 #Call SQL Server Information function. 
 $serverInfo = Get-SqlServerInfo
 
 try{
-    Get-ChildItem "${PSScriptRoot}\src\Scripts\GET_Scripts\" -Filter *.sql |
+    Get-ChildItem "${PSScriptRoot}\src\Scripts\SP\" -Filter *.sql |
     ForEach-Object{
         #$_ wil get FileInfo inside Script\ directory
-        $ScriptPath = "${PSScriptRoot}\src\Scripts\GET_Scripts\$_"
-        #$_.ToString() will get the file name with extension '.sql'. To give a readable name lets trim 'Get' & '.sql' from the file name.
-        #for example: 'GetStudents.sql' => 'Students.csv'
-        $creatingCSVFile = $_.ToString().Substring(3, $_.ToString().Substring(0,$_.ToString().indexof(".")).length - 3)
-        $outputPath = "{0}\output\CSV_Files\{1}.csv" -f ${PSScriptRoot}, $creatingCSVFile
-
+        $ScriptPath = "${PSScriptRoot}\src\Scripts\SP\$_"
+        $HTMLFileName = $_.ToString().Substring(0,$_.ToString().indexof("."))
+        $HTMLFileName = "${HTMLFileName}_HTML_${timestamp}.html"
+        $outputPath = "{0}\output\HTML_Files\{1}" -f ${PSScriptRoot}, $HTMLFileName
+        
+        # Output of the query as DataTables
         if(!(Test-Path -Path $ScriptPath) -or (Get-Item -Path $ScriptPath).Length -eq 0){
             Write-Host "The input file $_ is empty or does not exist."
             return
         }else{
-            Write-Host "Executing Script $_ "
-            $scriptOutPut = Invoke-Sqlcmd -ServerInstance $serverInfo.SQLServerInstance -Database $serverInfo.SQLDatabaseName -Credential $serverInfo.SQLLogin -InputFile $ScriptPath
+            Write-Host "Executing script '$_' ..."
+            $scriptOutPut = Invoke-Sqlcmd -ServerInstance $serverInfo.SQLServerInstance -Database $serverInfo.SQLDatabaseName -Credential $serverInfo.SQLLogin -InputFile $ScriptPath -OutputAs DataTables
+            # $scriptOutPut = Invoke-Sqlcmd  -ConnectionString "Data Source=TestingPC;Initial Catalog=Students;Integrated Security=True;ApplicationIntent=ReadOnly" -InputFile $ScriptPath -OutputAs DataTables
             
             if(Test-Path -Path $outputPath){
-                Write-Host "$creatingCSVFile.csv file already exists."
+                Write-Host "'$HTMLFileName' file already exists."
             }else{
-                Write-Host "Saving results in $creatingCSVFile.csv."
-                $scriptOutPut | Export-Csv $outputPath -Delimiter ',' -NoTypeInformation
+                Write-Host "Saving results in '$HTMLFileName'"
+                ConvertToHtmlTable -ReportLabel "Custom Report Label" -DataTable $scriptOutPut -OutputFilePath $outputPath
+                Start-Sleep -Seconds 1
+                # Open the HTML file in a browser
+                Start-Process $outputPath
             }
+            $HTMLFileName = $null;
+            $outputPath = $null;
+            $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
         }
     }
 }
@@ -95,7 +104,7 @@ catch {
 }
 finally{
     if($ErrorDetails){
-        $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
+        
         $errorOutputPath = "${PSScriptRoot}\errors\StackTrace_$timestamp.txt"
         $ErrorDetails | Out-File $errorOutputPath 
     }
