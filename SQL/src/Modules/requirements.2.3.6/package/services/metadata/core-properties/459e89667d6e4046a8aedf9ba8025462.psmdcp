@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<coreProperties xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.openxmlformats.org/package/2006/metadata/core-properties">
-  <dc:creator>Chris Kuech</dc:creator>
-  <dc:description>PowerShell framework for declaratively defining and idempotently imposing system configurations</dc:description>
-  <dc:identifier>Requirements</dc:identifier>
-  <version>2.3.6</version>
-  <keywords>PSModule PSIncludes_Function PSFunction_Format-Checklist PSFunction_Format-Verbose PSFunction_Invoke-Requirement PSFunction_New-Requirement PSFunction_New-RequirementGroup PSFunction_Set-Requirement PSFunction_Test-Requirement PSCommand_Format-Checklist PSCommand_Format-Verbose PSCommand_Invoke-Requirement PSCommand_New-Requirement PSCommand_New-RequirementGroup PSCommand_Set-Requirement PSCommand_Test-Requirement PSCommand_Push-Namespace</keywords>
-  <lastModifiedBy>NuGet.Build.Tasks.Pack, Version=5.4.0.2, Culture=neutral, PublicKeyToken=31bf3856ad364e35;</lastModifiedBy>
-</coreProperties>

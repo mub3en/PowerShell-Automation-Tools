@@ -1,2 +1,0 @@
-
-."$PSScriptRoot\interface.ps1"

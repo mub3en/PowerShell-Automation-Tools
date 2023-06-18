@@ -1,14 +1,3 @@
-enum ExitCodes {
-    DatabaseConnectivityTestFailed = 1
-    DatabaseLoginFailed = 2
-    DatabaseConnectionFailed = 3
-    DatabaseUnknownException = 4
-    DatabaseSettigsNotDefined = 5
-    LaunchedNonElevated = 6
-    DatabaseNameNotFound = 7
-    UnknownException = 8
-}
-
 #get identity of the current user and verify if its an administrator 
 $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
 $TestAdmin = (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
@@ -22,22 +11,24 @@ if($TestAdmin -eq  $false){
 Set-Location -LiteralPath $PSScriptRoot
 Push-Location $PSScriptRoot
 
-#Import PowerShell Libraries
-$moduleNames = @(
+#Import PowerShell libraries & custom modules/functions
+$modules = @(
     "\src\Modules\sqlserver.21.1.18256\SqlServer.psd1"
     # ,"\src\Modules\requirements.2.3.6\Requirements.psd1"
+    ,"\src\Functions\ExitCodes.ps1"
+    ,"\src\Functions\Functions.ps1"
+    ,"\src\Functions\Get-SQLFunctions.ps1"
+    ,"\src\Functions\GUI-Components.ps1"
 )
 
-$moduleNames | ForEach-Object {
+$modules | ForEach-Object {
     $modulePath = Join-Path -Path $PSScriptRoot -ChildPath $_
     Import-Module -Name $modulePath
 }
-#Import Custom Modules/Functions
-Import-Module -Name "${PSScriptRoot}\src\Functions\Functions.ps1"
 
 $timestamp = Get-Date -Format "yyyyMMdd_HHmmss"
 
-#Call SQL Server Information function. 
+#Call SQL Server authentication function 
 $serverInfo = Get-SqlServerInfo
 
 try{
@@ -62,7 +53,7 @@ try{
                 Write-Host "'$HTMLFileName' file already exists."
             }else{
                 Write-Host "Saving results in '$HTMLFileName'"
-                ConvertToHtmlTable -ReportLabel "Custom Report Label" -DataTable $scriptOutPut -OutputFilePath $outputPath
+                Save-DataTableToHtmlTable -ReportLabel "Custom Report Label" -DataTable $scriptOutPut -OutputFilePath $outputPath
                 Start-Sleep -Seconds 1
                 # Open the HTML file in a browser
                 Start-Process $outputPath
