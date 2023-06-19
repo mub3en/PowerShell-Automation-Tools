@@ -1,5 +1,3 @@
-Add-Type -AssemblyName System.Windows.Forms
-
 #get identity of the current user and verify if its an administrator 
 $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
 $TestAdmin = (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)

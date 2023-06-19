@@ -6,7 +6,7 @@ Refernce article: https://learn.microsoft.com/en-us/powershell/module/sqlserver/
 There are two SQL Server PowerShell modules; SqlServer and SQLPS.
 
 .DESCRIPTION
-We are using all GET functions for this directory that makes it easy to retrieve all the necessary information.
+We are utilizing various GET functions in this script to facilitate the retrieval of all the required information. By using these functions, we can easily gather the necessary data from the specified directory.
 
 .PARAMETER Requirements
 1. Insufficient Windows permissions: If the user does not have sufficient Windows permissions`
