@@ -29,7 +29,7 @@ The script retrieves the following information components:
 
 | Script Name | Description |
 | :--- | :--- |
-| [Get information on SQL Server in a report.](https://github.com/mub3en/PowerShell-Automation-Tools/tree/master/SQL/Get_SQL_Server_info.ps1) | A set of cmdlets functions that support actions such as getting information on SQL Server using all GET functions defined by [SQL Server](https://www.powershellgallery.com/packages/SqlServer/22.1.1)  modules.|
+| [Get Information on SQL Server in a Report(CSV/HTML/TEXT).](https://github.com/mub3en/PowerShell-Automation-Tools/tree/master/SQL/Get_SQL_Server_info.ps1) | A set of cmdlets functions that support actions such as getting information on SQL Server using all GET functions defined by [SQL Server](https://www.powershellgallery.com/packages/SqlServer/22.1.1)  modules.|
 | [SQL authentication and Custom CSV Files.](https://github.com/mub3en/PowerShell-Automation-Tools/tree/master/SQL/Execute_SQL_and_Save_Results_in_FlatFiles.ps1) | Authenticates SQL user and execute scripts against the database. The results will then be saved in CSV files. |
 | [SQL authentication and Custom HTML Reports](https://github.com/mub3en/PowerShell-Automation-Tools/tree/master/SQL/Execute_SQL_SPs_and_Build_HTML_Reports.ps1) | Authenticates SQL user and execute Stored Procedures against the database. The results will then be saved HTML formatted table. |
 
