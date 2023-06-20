@@ -34,6 +34,16 @@ PS> Get-SqlAgent -ServerInstance "ServerName" -Credential (Get-Credential -UserN
 
 #>
 
+<#
+.SYNOPSIS
+Authenticates targeted SQL Server instance.
+
+.EXAMPLE
+PS> $serverInfo = Get-SqlServerInfo
+-ServerInstance $serverInfo.SQLServerInstance 
+-Database $serverInfo.SQLDatabaseName 
+-Credential $serverInfo.SQLLogin
+#>
 function Get-SqlServerInfo {
     param()
     
@@ -66,7 +76,6 @@ Gets a SQL Agent object that is present in the target instance of SQL Server.
 PS> Get-CustomSqlAgent -ServerInstance "ServerName"
 OR
 PS> Get-CustomSqlAgent -ServerInstance "ServerName" -ShortSummary $false
-Retrieves complete SQL Server Agent information for the specified server instance 'ServerName'.
 #>
 function Get-CustomSqlAgent {
     [CmdletBinding()]
@@ -131,57 +140,8 @@ Gets a SQL Agent Job object for each job that is present in the target instance 
 .EXAMPLE
 PS> Get-CustomSqlAgentJob -ServerInstance "ServerName"
 OR
-PS> Get-CustomSqlAgentJob -ServerInstance "ServerName" -Name $false
-Retrieves complete SQL Server Agent information for the specified server instance 'ServerName'.
+PS> Get-CustomSqlAgentJob -ServerInstance "ServerName" -JobName "JOB NAME" -DefaultProperties $false
 #>
-
-# function Get-CustomSqlAgentJob {
-#     [CmdletBinding()]
-#     param (
-#         [Parameter(Position = 0, Mandatory = $true)]
-#         [String]$ServerInstance,
-        
-#         [Parameter(Position = 1, Mandatory = $false)]
-#         [String]$JobName,
-        
-#         [Parameter(Position = 2, Mandatory = $false)]
-#         [bool]$DefaultProperties = $true
-#     )
-#     Process {
-#         if (-not [string]::IsNullOrEmpty($JobName)) {
-#             $job = Get-SqlAgentJob -ServerInstance $ServerInstance -Name $JobName
-#         } else {
-#             $job = Get-SqlAgentJob -ServerInstance $ServerInstance
-#         }
-
-#         # Create a custom PSObject with selected properties from $job
-#         $customObject = [PSCustomObject]@{}
-
-#         if ($DefaultProperties) {
-#             $selectedProperties = @(
-#                 "Name",
-#                 "OwnerLoginName",
-#                 "Category",
-#                 "IsEnabled",
-#                 "CurrentRunStatus",
-#                 "DateCreated",
-#                 "LastRunDate",
-#                 "LastRunDuration"
-#             )
-#         } else {
-#             $selectedProperties = $job | Get-Member -MemberType Property | ForEach-Object { $_.Name }
-#         }
-
-#         foreach ($propertyName in $selectedProperties) {
-#             $propertyValue = $job.$propertyName
-#             $customObject | Add-Member -MemberType NoteProperty -Name $propertyName -Value $propertyValue
-#         }
-
-#         return $customObject
-#     }
-# }
-
-
 function Get-CustomSqlAgentJob {
     [CmdletBinding()]
     param (
@@ -238,5 +198,224 @@ function Get-CustomSqlAgentJob {
             }
         }
         return $job
+    }
+}
+
+<#
+.SYNOPSIS
+Gets the job history present in the target instance of SQL Agent.
+
+.EXAMPLE
+PS> Get-CustomSqlAgentJob -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlAgentJob -ServerInstance "ServerName" -JobID "JOB NAME" -Since "LastWeek" -DefaultProperties $false
+
+-Since
+Midnight (gets all the job history information generated after midnight)
+Yesterday (gets all the job history information generated in the last 24 hours)
+LastWeek (gets all the job history information generated in the last week)
+LastMonth (gets all the job history information generated in the last month)
+#>
+function Get-CustomSqlAgentJobHistory {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [String]$JobID,
+
+        [Parameter(Position = 2, Mandatory = $false)]
+        [String]$Since = "LastWeek",
+        
+        [Parameter(Position = 3, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "SqlMessageID"     
+            ,"InstanceID"
+            ,"StepID"
+            ,"JobID"
+            ,"JobName"
+            ,"StepName"         
+            ,"Message"          
+            ,"SqlSeverity"     
+            ,"RunStatus"        
+            ,"RunDate"          
+            ,"RunDuration"      
+            ,"OperatorEmailed" 
+            ,"OperatorPaged"    
+            ,"OperatorNetsent"  
+            ,"RetriesAttempted" 
+            ,"Server" 
+        )
+
+        $jobHistory = $null
+        if (-not [string]::IsNullOrEmpty($JobID)) {
+            $jobHistory = Get-SqlAgentJobHistory -ServerInstance $ServerInstance -Since $Since -JobID $JobID
+        }
+        else {
+            $jobHistory = Get-SqlAgentJobHistory -ServerInstance $ServerInstance -Since $Since
+        }
+
+        if ($DefaultProperties) {
+            $jobHistory = $jobHistory | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $jobHistory.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobHistory.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $jobHistory = $jobHistory | Select-Object -Property *
+            $jobHistory | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $jobHistory.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobHistory.$property = $names -join ', '
+                }
+            }
+        }
+        return $jobHistory
+    }
+}
+
+<#
+.SYNOPSIS
+Gets a job schedule object for each schedule that is present in the target instance of SQL Agent Job
+
+.EXAMPLE
+PS> Get-CustomSqlAgentJobSchedule -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlAgentJobSchedule -ServerInstance "ServerName" -ScheduleName "JOB NAME"  -DefaultProperties $false
+#>
+function Get-CustomSqlAgentJobSchedule {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [String]$ScheduleName,
+
+        [Parameter(Position = 3, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "ID"
+            ,"FrequencyInterval"  
+            ,"Name"                           
+            ,"IsEnabled"    
+            ,"DateCreated"               
+            ,"ActiveStartDate"           
+            ,"ActiveEndDate"  
+        )
+                   
+        $jobSchedule = $null
+        if (-not [string]::IsNullOrEmpty($ScheduleName)) {
+            $jobSchedule = Get-SqlAgentJob -ServerInstance $ServerInstance | Get-SqlAgentJobSchedule -Name $ScheduleName
+        }
+        else {
+            $jobSchedule = Get-SqlAgentJob -ServerInstance $ServerInstance | Get-SqlAgentJobSchedule 
+        }
+
+        if ($DefaultProperties) {
+            $jobSchedule = $jobSchedule | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $jobSchedule.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobSchedule.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $jobSchedule = $jobSchedule | Select-Object -Property *
+            $jobSchedule | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $jobSchedule.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobSchedule.$property = $names -join ', '
+                }
+            }
+        }
+        return $jobSchedule
+    }
+}
+
+<#
+.SYNOPSIS
+Gets a job schedule object for each schedule that is present in the target instance of SQL Agent Job
+
+.EXAMPLE
+PS> Get-CustomSqlAgentJobSchedule -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlAgentJobSchedule -ServerInstance "ServerName" -StepName "Step NAME"  -DefaultProperties $false
+#>
+function Get-CustomSqlAgentJobSteps {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [String]$StepName,
+
+        [Parameter(Position = 3, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "Name"            
+            ,"OnSuccessAction"           
+            ,"OnFailAction"              
+            ,"LastRunDate"              
+            ,"LastRunDuration" 
+            ,"ID"         
+            ,"SubSystem" 
+        )
+   
+        $jobsteps = $null
+        if (-not [string]::IsNullOrEmpty($StepName)) {
+            $jobsteps = Get-SqlAgent -ServerInstance $ServerInstance | Get-SqlAgentJob | Get-SqlAgentJobStep -Name $StepName
+        }
+        else {
+            $jobsteps = Get-SqlAgent -ServerInstance $ServerInstance | Get-SqlAgentJob | Get-SqlAgentJobStep
+        }
+
+        if ($DefaultProperties) {
+            $jobsteps = $jobsteps | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $jobsteps.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobsteps.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $jobsteps = $jobsteps | Select-Object -Property *
+            $jobsteps | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $jobsteps.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobsteps.$property = $names -join ', '
+                }
+            }
+        }
+        return $jobsteps
     }
 }
