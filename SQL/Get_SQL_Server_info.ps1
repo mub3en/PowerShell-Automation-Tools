@@ -49,58 +49,95 @@ try {
     $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Info.csv" -f ${PSScriptRoot}
     $TextPath = "{0}\output\Text_Files\SQL_Agent_Info.txt" -f ${PSScriptRoot}
     $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Info.html" -f ${PSScriptRoot}
-    $CustomSqlAgent = Get-CustomSqlAgent -ServerInstance $SQLServerInstance
+    $CustomFuncHolder = Get-CustomSqlAgent -ServerInstance $SQLServerInstance
     Write-host "SQL agent information is being written to a CSV, text and a HTML file.."
-    $CustomSqlAgent | Export-Csv -Path $CSVPath -NoTypeInformation
-    $CustomSqlAgent | Out-File -FilePath $TextPath -Encoding UTF8
-    $CustomSqlAgent = Import-Csv -Path $CSVPath
-    Save-CSVtoHtmlTable  -ReportLabel "SQL server '${SQLServerInstance}' agent information" -CsvObject $CustomSqlAgent -OutputFilePath $HTMLPath 
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL server '${SQLServerInstance}' agent information" -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath 
     
     #calling Get-CustomSqlAgentJob function
     $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Job_Info.csv" -f ${PSScriptRoot}
     $TextPath = "{0}\output\Text_Files\SQL_Agent_Job_Info.txt" -f ${PSScriptRoot}
     $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Job_Info.html" -f ${PSScriptRoot}
-    $CustomSqlAgentJob = Get-CustomSqlAgentJob -ServerInstance $SQLServerInstance
+    $CustomFuncHolder = Get-CustomSqlAgentJob -ServerInstance $SQLServerInstance
     Write-host "SQL agent job information is being written to a CSV, text and a HTML file.."
-    $CustomSqlAgentJob | Export-Csv -Path $CSVPath -NoTypeInformation
-    $CustomSqlAgentJob | Out-File -FilePath $TextPath -Encoding UTF8
-    $CustomSqlAgentJob = Import-Csv -Path $CSVPath
-    Save-CSVtoHtmlTable  -ReportLabel "SQL server '${SQLServerInstance}' jobs information" -CsvObject $CustomSqlAgentJob -OutputFilePath $HTMLPath
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL server '${SQLServerInstance}' jobs information" -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
     
     #calling Get-CustomSqlAgentJobHistory function
     $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Job_History.csv" -f ${PSScriptRoot}
     $TextPath = "{0}\output\Text_Files\SQL_Agent_Job_History.txt" -f ${PSScriptRoot}
     $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Job_History.html" -f ${PSScriptRoot}
-    $CustomSqlAgentJob = Get-CustomSqlAgentJobHistory -ServerInstance $SQLServerInstance
+    $CustomFuncHolder = Get-CustomSqlAgentJobHistory -ServerInstance $SQLServerInstance
     Write-host "SQL agent job history is being written to a CSV, text and a HTML file.."
-    $CustomSqlAgentJob | Export-Csv -Path $CSVPath -NoTypeInformation
-    $CustomSqlAgentJob | Out-File -FilePath $TextPath -Encoding UTF8
-    $CustomSqlAgentJob = Import-Csv -Path $CSVPath
-    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs history" -CsvObject $CustomSqlAgentJob -OutputFilePath $HTMLPath
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs history" -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
 
     #calling Get-CustomSqlAgentJobSchedule function
     $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Job_Schedule.csv" -f ${PSScriptRoot}
     $TextPath = "{0}\output\Text_Files\SQL_Agent_Job_Schedule.txt" -f ${PSScriptRoot}
     $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Job_Schedule.html" -f ${PSScriptRoot}
-    $CustomSqlAgentJob = Get-CustomSqlAgentJobSchedule -ServerInstance $SQLServerInstance
+    $CustomFuncHolder = Get-CustomSqlAgentJobSchedule -ServerInstance $SQLServerInstance
     Write-host "SQL agent job schedule is being written to a CSV, text and a HTML file.."
-    $CustomSqlAgentJob | Export-Csv -Path $CSVPath -NoTypeInformation
-    $CustomSqlAgentJob | Out-File -FilePath $TextPath -Encoding UTF8
-    $CustomSqlAgentJob = Import-Csv -Path $CSVPath
-    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs schedule" -CsvObject $CustomSqlAgentJob -OutputFilePath $HTMLPath
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs schedule" -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
 
 
     #calling Get-CustomSqlAgentJobSteps function
     $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Job_Steps.csv" -f ${PSScriptRoot}
     $TextPath = "{0}\output\Text_Files\SQL_Agent_Job_Steps.txt" -f ${PSScriptRoot}
     $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Job_Steps.html" -f ${PSScriptRoot}
-    $CustomSqlAgentJob = Get-CustomSqlAgentJobSteps -ServerInstance $SQLServerInstance
+    $CustomFuncHolder = Get-CustomSqlAgentJobSteps -ServerInstance $SQLServerInstance
     Write-host "SQL agent job schedule is being written to a CSV, text and a HTML file.."
-    $CustomSqlAgentJob | Export-Csv -Path $CSVPath -NoTypeInformation
-    $CustomSqlAgentJob | Out-File -FilePath $TextPath -Encoding UTF8
-    $CustomSqlAgentJob = Import-Csv -Path $CSVPath
-    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs steps" -CsvObject $CustomSqlAgentJob -OutputFilePath $HTMLPath
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' jobs steps" -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
    
+
+    #calling Get-CustomSqlAgentSchedule function
+    $CSVPath = "{0}\output\CSV_Files\SQL_Agent_Schedule.csv" -f ${PSScriptRoot}
+    $TextPath = "{0}\output\Text_Files\SQL_Agent_Schedule.txt" -f ${PSScriptRoot}
+    $HTMLPath = "{0}\output\HTML_Files\SQL_Agent_Schedule.html" -f ${PSScriptRoot}
+    $CustomFuncHolder = Get-CustomSqlAgentSchedule -ServerInstance $SQLServerInstance
+    Write-host "SQL agent schedule is being written to a CSV, text and a HTML file.."
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' agent schedule." -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
+   
+    #calling Get-CustomSqlAssessmentItem function
+    $CSVPath = "{0}\output\CSV_Files\SQL_Server_Objects_Assessment_List.csv" -f ${PSScriptRoot}
+    $TextPath = "{0}\output\Text_Files\SQL_Server_Objects_Assessment_List.txt" -f ${PSScriptRoot}
+    $HTMLPath = "{0}\output\HTML_Files\SQL_Server_Objects_Assessment_List.html" -f ${PSScriptRoot}
+    #calling with all properties -DefaultProperties $false
+    $CustomFuncHolder = Get-CustomSqlAssessmentItem -ServerInstance $SQLServerInstance -DefaultProperties $false
+    Write-host "SQL server assessment for the objects is being written to a CSV, text and a HTML file.."
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' Assessment List." -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
+
+
+    #calling Get-CustomSqlBackupHistory function
+    $CSVPath = "{0}\output\CSV_Files\SQL_Backup_history.csv" -f ${PSScriptRoot}
+    $TextPath = "{0}\output\Text_Files\SQL_Backup_history.txt" -f ${PSScriptRoot}
+    $HTMLPath = "{0}\output\HTML_Files\SQL_Backup_history.html" -f ${PSScriptRoot}
+    #calling with all properties -DefaultProperties $false
+    $CustomFuncHolder = Get-CustomSqlBackupHistory -ServerInstance $SQLServerInstance -DefaultProperties $false
+    Write-host "SQL server backup history is being written to a CSV, text and a HTML file.."
+    $CustomFuncHolder | Export-Csv -Path $CSVPath -NoTypeInformation
+    $CustomFuncHolder | Out-File -FilePath $TextPath -Encoding UTF8
+    $CustomFuncHolder = Import-Csv -Path $CSVPath
+    Save-CSVtoHtmlTable  -ReportLabel "SQL Server '${SQLServerInstance}' Backup History." -CsvObject $CustomFuncHolder -OutputFilePath $HTMLPath
+ 
 }
 catch [System.Data.SqlClient.SqlException] {
     $ErrorDetails = Format-Error -Exception $_ -Depth 2

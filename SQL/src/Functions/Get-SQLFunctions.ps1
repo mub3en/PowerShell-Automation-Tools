@@ -304,7 +304,7 @@ function Get-CustomSqlAgentJobSchedule {
         [Parameter(Position = 1, Mandatory = $false)]
         [String]$ScheduleName,
 
-        [Parameter(Position = 3, Mandatory = $false)]
+        [Parameter(Position = 2, Mandatory = $false)]
         [bool]$DefaultProperties = $true
     )
     Process {
@@ -371,7 +371,7 @@ function Get-CustomSqlAgentJobSteps {
         [Parameter(Position = 1, Mandatory = $false)]
         [String]$StepName,
 
-        [Parameter(Position = 3, Mandatory = $false)]
+        [Parameter(Position = 2, Mandatory = $false)]
         [bool]$DefaultProperties = $true
     )
     Process {
@@ -417,5 +417,198 @@ function Get-CustomSqlAgentJobSteps {
             }
         }
         return $jobsteps
+    }
+}
+
+<#
+.SYNOPSIS
+Gets a SQL job schedule object for each schedule that is present in the target instance of SQL Agent.
+
+.EXAMPLE
+PS> Get-CustomSqlAgentSchedule  -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlAgentSchedule  -ServerInstance "ServerName" -JobName "Step NAME"  -DefaultProperties $false
+#>
+function Get-CustomSqlAgentSchedule {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [String]$JobName,
+
+        [Parameter(Position = 2, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "ID" 
+            ,"Name"            
+            ,"JobCount"           
+            ,"IsEnabled"              
+            ,"DateCreated"              
+            ,"ActiveStartDate" 
+            ,"ActiveEndDate"         
+            
+        )
+   
+        $jobsteps = $null
+        if (-not [string]::IsNullOrEmpty($JobName)) {
+            $jobsteps = Get-SqlAgentSchedule -ServerInstance $ServerInstance | Where-Object { $_.Name -eq $StepName }
+        }
+        else {
+            $jobsteps = Get-SqlAgentSchedule -ServerInstance $ServerInstance  
+        }
+
+        if ($DefaultProperties) {
+            $jobsteps = $jobsteps | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $jobsteps.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobsteps.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $jobsteps = $jobsteps | Select-Object -Property *
+            $jobsteps | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $jobsteps.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $jobsteps.$property = $names -join ', '
+                }
+            }
+        }
+        return $jobsteps
+    }
+}
+
+
+<#
+.SYNOPSIS
+Gets SQL Assessment best practice checks available for a chosen SQL Server object.
+
+.EXAMPLE
+PS> Get-CustomSqlAssessmentItem -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlAssessmentItem -ServerInstance "ServerName" -DefaultProperties $false
+#>
+function Get-CustomSqlAssessmentItem {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "ID" 
+            ,"Enabled"            
+            ,"DisplayName"           
+            ,"OriginName" 
+            ,"OriginVersion"                     
+        )
+   
+        $sqlAssessment = $null
+
+        if ($DefaultProperties) {
+            $sqlAssessment = Get-SqlInstance -ServerInstance $ServerInstance | Get-SqlAssessmentItem | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $sqlAssessment.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $sqlAssessment.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $sqlAssessment = Get-SqlInstance -ServerInstance $ServerInstance | Get-SqlAssessmentItem | Select-Object -Property *
+            $sqlAssessment | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $sqlAssessment.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $sqlAssessment.$property = $names -join ', '
+                }
+            }
+        }
+        return $sqlAssessment
+    }
+}
+
+<#
+.SYNOPSIS
+Gets backup information about databases and returns SMO BackupSet objects for each Backup record found based on the parameters specified to this cmdlet.
+
+.EXAMPLE
+PS> Get-CustomSqlBackupHistory -ServerInstance "ServerName"
+OR
+PS> Get-CustomSqlBackupHistory -ServerInstance "ServerName" -DatabaseName "DB NAME"  -DefaultProperties $false
+#>
+function Get-CustomSqlBackupHistory {
+    [CmdletBinding()]
+    param (
+        [Parameter(Position = 0, Mandatory = $true)]
+        [String]$ServerInstance,
+        
+        [Parameter(Position = 1, Mandatory = $false)]
+        [String]$DatabaseName,
+
+        [Parameter(Position = 2, Mandatory = $false)]
+        [bool]$DefaultProperties = $true
+    )
+    Process {
+        $defaultSelectedProperties = @(
+            "MachineName" 
+            ,"ServerName"            
+            ,"DatabaseName"           
+            ,"Name"      
+            ,"BackupSetType"              
+            ,"BackupStartDate" 
+            ,"BackupFinishDate"
+            ,"ExpirationDate"
+        )
+   
+        $backupHistory = $null
+        if (-not [string]::IsNullOrEmpty($DatabaseName)) {
+            $backupHistory = Get-SqlBackupHistory -ServerInstance $ServerInstance -DatabaseName $DatabaseName
+        }
+        else {
+            $backupHistory = Get-SqlBackupHistory -ServerInstance $ServerInstance 
+        }
+
+        if ($DefaultProperties) {
+            $backupHistory = $backupHistory | Select-Object -Property $defaultSelectedProperties
+            foreach ($property in $defaultSelectedProperties) {
+                $propertyValue = $backupHistory.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $backupHistory.$property = $names -join ', '
+                }
+            }
+        }
+        else {
+            $backupHistory = $backupHistory | Select-Object -Property *
+            $backupHistory | Get-Member -MemberType Properties | ForEach-Object {
+                $property = $_.Name
+                $propertyValue = $backupHistory.$property
+    
+                if ($propertyValue -is [Microsoft.SqlServer.Management.Smo.ArrayListCollectionBase] -or $propertyValue -is [Microsoft.SqlServer.Management.Smo.SimpleObjectCollectionBase]) {
+                    $names = $propertyValue | Select-Object -ExpandProperty Name
+                    $backupHistory.$property = $names -join ', '
+                }
+            }
+        }
+        return $backupHistory
     }
 }
