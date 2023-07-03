@@ -22,7 +22,7 @@ Step 7: Configure Disaster Recovery
 - [Log shipping](https://learn.microsoft.com/en-us/sql/database-engine/log-shipping/about-log-shipping-sql-server?view=sql-server-ver16)
 - [Replication](https://learn.microsoft.com/en-us/sql/relational-databases/replication/sql-server-replication?view=sql-server-ver16)
 
-### Failover clustering
+### 1 - Failover clustering
 
 Database mirroring is a solution for increasing availability of a SQL Server database. It maintains two exact copies of a single database. These copies must be on different SQL Server instances. Two databases form a relationship known as a database mirroring session. One instance acts as the principal server, while the other is in the standby mode and acts as the mirror server. Two SQL Server instances that act in mirroring environment are known as partners, the principal server is sending the active portion of a transaction log to the mirror server where all transactions are redone.
 
@@ -31,7 +31,7 @@ There can be two types of mirror servers: hot and warm. A hot mirror server has 
 [Step by step Guide](https://www.mssqltips.com/sqlservertip/6539/stepbystep-installation-of-sql-server-2019-on-a-windows-server-2019-failover-cluster-part-1/)
 
 
-### Replication
+### 2 - Replication
 
 Replication can be used as a technology for coping and distributing data from one SQL Server database to another. Consistency is achieved by synchronizing. Replication of a SQL Server database can result in benefits like: load balancing, redundancy, and offline processing. Load balancing allows spreading data to a number of SQL Servers and distributing the query load among those SQL Servers. A replication consists of two components:
 
@@ -46,7 +46,7 @@ Replication can be used as a technology for coping and distributing data from on
 - **Snapshot replication:** the publisher makes a snapshot of the entire database and makes it available for all subscribers
 - **Transactional replication:** uses replication agents which monitor changes on the publisher and transmit these changes to the subscribers
 
-### Log shipping
+### 3 - Log shipping
 
 Log shipping is based on automated sending of transaction log backups from a primary SQL Server instance to one or more secondary SQL Server instances. 
 The primary SQL Server instance is a production server, while the secondary SQL Server instance is a warm standby copy. There can be a third SQL Server instance which acts as a monitoring server. 
