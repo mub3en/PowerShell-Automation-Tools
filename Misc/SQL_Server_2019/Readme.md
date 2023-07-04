@@ -2,8 +2,8 @@
 
 Step 1: Install [VMWare](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html)
 
-Step 2: Downlaod [Windows](https://www.microsoft.com/en-us/evalcenter/download-windows-server-2019) image and create three Windows servers 
-- Domain Conrroller
+Step 2: Download [Windows](https://www.microsoft.com/en-us/evalcenter/download-windows-server-2019) image and create three Windows servers 
+- Domain Controller
 - SQL1 (Primary Node)
 - SQL2 (Secondary Node)
 
