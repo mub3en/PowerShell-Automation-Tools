@@ -43,6 +43,20 @@ select * from sys.dm_db_missing_index_details
 --)
 SELECT * FROM sys.dm_db_index_physical_stats (NULL, NULL, NULL, NULL, NULL)
 
+--Returns current lower-level I/O, locking, latching, and access method activity for each partition of a table or index in the database.
+--Memory-optimized indexes do not appear in this DMV. 
+--  sys.dm_db_index_operational_stats (    
+--     { database_id | NULL | 0 | DEFAULT }    
+--   , { object_id | NULL | 0 | DEFAULT }    
+--   , { index_id | 0 | NULL | -1 | DEFAULT }    
+--   , { partition_number | NULL | 0 | DEFAULT }    
+-- ) 
+SELECT * FROM sys.dm_db_index_operational_stats (NULL, NULL, NULL, NULL)
+
+--Returns counts of different types of index operations and the time each type of operation was last performed.
+SELECT * FROM sys.dm_db_index_operational_stats 
+ 
+
 
 --------------------------------------------------------------------------
 ------------------------------- CACHED PLANS -----------------------------
