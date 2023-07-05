@@ -8,9 +8,10 @@ Their schemas and the data they return may change in future releases of SQL Serv
 Therefore, dynamic management views and functions in future releases may not be compatible 
 with the dynamic management views and functions in this release. For example, in future 
 releases of SQL Server, Microsoft may augment the definition of any dynamic management view 
-by adding columns to the end of the column list. We recommend against using the 
-syntax SELECT * FROM <dynamic_management_view_name> in production code because the number 
-of columns returned might change and break your application.
+by adding columns to the end of the column list. 
+
+WARNING: We recommend against using the syntax SELECT * FROM <dynamic_management_view_name> in production code 
+because the number of columns returned might change and break your application.
 */
 
 --------------------------------------------------------------------------
@@ -226,4 +227,10 @@ SELECT * FROM sys.dm_tran_locks
 
 --Returns information about unresolved, aborted transactions on the SQL Server instance.
  SELECT * FROM sys.dm_tran_aborted_transactions
+
+
+--------------------------------------------------------------------------
+------------------------ SQL Server Tuning -------------------------------
+--------------------------------------------------------------------------
+
 
