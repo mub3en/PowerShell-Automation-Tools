@@ -233,4 +233,11 @@ SELECT * FROM sys.dm_tran_locks
 ------------------------ SQL Server Tuning -------------------------------
 --------------------------------------------------------------------------
 
+--Returns detailed information about automatic tuning recommendations.
+SELECT * FROM sys.dm_db_tuning_recommendations
 
+--Returns the automatic tuning mode for this database. Refer to ALTER DATABASE SET AUTOMATIC_TUNING (Transact-SQL) for available options.
+SELECT * FROM sys.database_automatic_tuning_mode
+
+--Returns the automatic tuning options for this database.
+SELECT * FROM sys.database_automatic_tuning_options
