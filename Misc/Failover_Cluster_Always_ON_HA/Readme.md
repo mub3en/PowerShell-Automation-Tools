@@ -76,5 +76,12 @@
 ``Setting up Maintenance Plan``
 
 30. Setup a maint task
-
+    * Typical maintenance tasks
+        * ``Check Database integrity``
+        * ``Reorganize Indexes``
+        * ``Rebuild Indexex``
+        * ``Update Statistics ( cannot be done on read only replica)``
+        * ``Backup Database (Full/Log)  (Differential backup cannot be performed on the read-only database)``
+        * ``Cleanup History from msdb if neeeded``
+        * ``Shrink Database (It is recommended that you never execute this action as part of any regular maintenance as it leads to severe index fragmentation which can harm database performance.)``
 
