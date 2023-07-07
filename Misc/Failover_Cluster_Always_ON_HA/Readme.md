@@ -7,7 +7,7 @@
 
  ``If above mentioned steps are complete, start by creating:`` 
 
-4. Domain Controller  (DC) ✅
+4. Add a VM host that would be the Domain Controller (DC) ✅
 5. One Primary Server and Required Number of Replicas ✅
     * Memory 2 Gigs and Storage 60 gigs for DC ✅
     * Memory 4 Gigs and Storage 100 gigs for ✅
