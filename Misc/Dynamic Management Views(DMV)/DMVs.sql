@@ -1,5 +1,5 @@
 /*
-Ref Article: https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/system-dynamic-management-views?view=azuresqldb-current
+Ref Article: https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/system-dynamic-management-views
 */
 
 /*
