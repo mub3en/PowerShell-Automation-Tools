@@ -19,20 +19,20 @@ because the number of columns returned might change and break your application.
 --------------------------------------------------------------------------
 
 --Returns information about indexes that are missing in a specific index group, except for spatial indexes.
-select * from sys.dm_db_missing_index_groups
+SELECT * FROM sys.dm_db_missing_index_groups
 --Returns summary information about groups of missing indexes, excluding spatial indexes.
-select * from sys.dm_db_missing_index_group_stats
+SELECT * FROM sys.dm_db_missing_index_group_stats
 --ONLY SQL Server 2019 (15.x) and  Azure SQL Database and Azure SQL Managed Instance
 --Returns information about queries that needed a missing index from groups of missing indexes, excluding spatial indexes. More than one query may be returned per missing index group. 
 --One missing index group may have several queries that needed the same index.
-select * from sys.dm_db_missing_index_group_stats_query 
+SELECT * FROM sys.dm_db_missing_index_group_stats_query 
 
 --Returns information about queries that needed a missing index from groups of missing indexes, excluding spatial indexes. More than one query may be returned per missing index group. 
 --One missing index group may have several queries that needed the same index.
-select * from sys.dm_db_missing_index_group_stats_query 
+SELECT * FROM sys.dm_db_missing_index_group_stats_query 
 
 --Returns detailed information about missing indexes, excluding spatial indexes.
-select * from sys.dm_db_missing_index_details 
+SELECT * FROM sys.dm_db_missing_index_details 
 
 --Returns size and fragmentation information for the data and indexes of the specified table or view in SQL Server.
 --sys.dm_db_index_physical_stats (
