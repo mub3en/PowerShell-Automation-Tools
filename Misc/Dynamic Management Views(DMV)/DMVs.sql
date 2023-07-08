@@ -14,6 +14,8 @@ WARNING: We recommend against using the syntax SELECT * FROM <dynamic_management
 because the number of columns returned might change and break your application.
 */
 
+
+
 --------------------------------------------------------------------------
 --------------------------------- INDEXES --------------------------------
 --------------------------------------------------------------------------
@@ -56,7 +58,7 @@ SELECT * FROM sys.dm_db_index_operational_stats (NULL, NULL, NULL, NULL)
 
 --Returns counts of different types of index operations and the time each type of operation was last performed.
 SELECT * FROM sys.dm_db_index_operational_stats 
- 
+
 
 
 --------------------------------------------------------------------------
@@ -94,6 +96,7 @@ CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) AS t
 SELECT * FROM sys.dm_exec_query_stats
 
 
+
 --------------------------------------------------------------------------
 ------------------------------ RESOURCE GOVERNER -------------------------
 --------------------------------------------------------------------------
@@ -113,6 +116,8 @@ SELECT * FROM sys.dm_resource_governor_workload_groups
 --It cannot be used to retrieve the actual configuration and capacity settings.
 SELECT * FROM sys.dm_resource_governor_configuration
 
+ 
+ 
 --------------------------------------------------------------------------
 ------------------------------ Requests/Resource Monitoring -----------------------
 --------------------------------------------------------------------------
@@ -154,10 +159,7 @@ SELECT * FROM sys.resource_usage
 SELECT * FROM sys.dm_db_resource_stats
 
 
-
-
-
-
+ 
 --------------------------------------------------------------------------
 --------------------------- Connections Monitoring -----------------------
 --------------------------------------------------------------------------
@@ -166,13 +168,15 @@ SELECT * FROM sys.dm_db_resource_stats
 --Returns current database connection information for SQL Database.
 SELECT * FROM sys.dm_exec_connections
 
-
+ 
+ 
 --------------------------------------------------------------------------
 ------------------------------ Job Monitoring ----------------------------
 --------------------------------------------------------------------------
 --A job object is a Windows construct that implements CPU, memory, and IO resource governance at the operating system level.
 SELECT * FROM sys.dm_os_job_object
 
+ 
 
 --------------------------------------------------------------------------
 --------------------------- Page level Monitoring ------------------------
