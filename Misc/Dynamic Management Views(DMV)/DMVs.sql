@@ -279,3 +279,29 @@ SELECT * FROM sys.dm_db_session_space_usage
 
 --Returns page allocation and deallocation activity by task for the database.
 SELECT * FROM sys.dm_db_task_space_usage
+
+
+
+--------------------------------------------------------------------------
+------- Geo-Replication Dynamic Management Views and Functions -----------
+--------------------------------------------------------------------------
+
+--Applies to:  Azure SQL Database
+--Contains a row for each replication link between primary and secondary databases in a geo-replication partnership. 
+--This view resides in the logical master database.
+SELECT * FROM sys.geo_replication_links
+
+--Applies to:  Azure SQL Database, Azure SQL Managed Instance
+--Contains a row for each replication link between primary and secondary databases in a geo-replication partnership. 
+--This includes both primary and secondary databases. If more than one continuous replication link exists for a given primary database, 
+--this table contains a row for each of the relationships. The view is created in all databases, including the master database. 
+--However, querying this view in the master database returns an empty set.
+SELECT * FROM sys.dm_geo_replication_link_status
+
+--Applies to:  Azure SQL Database  Azure SQL Managed Instance
+--This view has been superseded by sys.dm_geo_replication_link_status and is preserved for backwards compatibility.
+SELECT * FROM sys.dm_continuous_copy_status 
+
+--Applies to:  Azure SQL Database, Azure SQL Managed Instance, Azure Synapse Analytics
+--Returns information about operations performed on databases in a Azure SQL Database server.
+SELECT * FROM sys.dm_operation_status
