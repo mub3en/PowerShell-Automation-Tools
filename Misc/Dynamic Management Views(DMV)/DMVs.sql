@@ -261,3 +261,21 @@ SELECT * FROM sys.query_store_query
 
 --Contains the Transact-SQL text and the SQL handle of the query.
 SELECT * FROM sys.query_store_query_text 
+
+
+
+--------------------------------------------------------------------------
+------------------------ Database Space Usage-----------------------------
+--------------------------------------------------------------------------
+
+--Returns space usage information for each data file in the database.
+SELECT * FROM sys.dm_db_file_space_usage
+
+--Returns space usage information for the transaction log.
+SELECT * FROM sys.dm_db_log_space_usage
+
+--Returns the number of pages allocated and deallocated by each session for the database.
+SELECT * FROM sys.dm_db_session_space_usage
+
+--Returns page allocation and deallocation activity by task for the database.
+SELECT * FROM sys.dm_db_task_space_usage
