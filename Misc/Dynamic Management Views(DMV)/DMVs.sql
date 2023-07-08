@@ -241,3 +241,27 @@ SELECT * FROM sys.database_automatic_tuning_mode
 
 --Returns the automatic tuning options for this database.
 SELECT * FROM sys.database_automatic_tuning_options
+
+
+
+--------------------------------------------------------------------------
+---------------- Query Store catalog views -------------------------------
+--------------------------------------------------------------------------
+
+--Applies to:  SQL Server 2016 (13.x) and later,  Azure SQL Database,  Azure SQL Managed Instance, Azure Synapse Analytics
+
+--Returns the Query Store options for this database
+SELECT * FROM sys.database_query_store_options 
+
+
+--Contains information about each execution plan associated with a query
+
+SELECT * FROM sys.query_store_plan 
+
+
+--Contains information about the query and its associated overall aggregated runtime execution statistics.
+SELECT * FROM sys.query_store_query
+
+
+--Contains the Transact-SQL text and the SQL handle of the query.
+SELECT * FROM sys.query_store_query_text 
