@@ -93,3 +93,192 @@ ORDER BY migs.avg_total_user_cost * migs.avg_user_impact * (migs.user_seeks + mi
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+-------- Find all backups and create Restore statemnets dynamically ------------
+--------------------------------------------------------------------------------
+
+WITH BackupHist
+AS
+(
+        SELECT
+                s.server_name
+            ,   d.name AS database_name
+            ,   STUFF(( SELECT  ''', DISK = ''' + physical_device_name
+                    FROM    msdb.dbo.backupmediafamily
+                    WHERE   media_set_id = s.media_set_id
+                    ORDER BY family_sequence_number
+                    FOR XML PATH('')),
+                1 ,
+                3 ,
+                '') + '''' AS physical_device_name
+            ,   (   SELECT  TOP 1
+                        CASE device_type
+                            WHEN 2 THEN 'Disk'
+                            WHEN 102 THEN 'Backup Device (Disk)'
+                            WHEN 5 THEN 'Tape'
+                            WHEN 105 THEN 'Backup Device (Tape)'
+                            WHEN 7 THEN 'Virtual Device'
+                        END AS device_type
+                    FROM    msdb.dbo.backupmediafamily
+                    WHERE   media_set_id = s.media_set_id) AS device_type
+            ,   CAST (s.backup_size / 1048576.0 AS FLOAT) AS backup_size_mb
+            ,   CAST (s.compressed_backup_size / 1048576.0 AS FLOAT) AS compressed_backup_size_mb
+            ,   s.backup_start_date
+            ,   s.first_lsn
+            ,   s.last_lsn
+            ,   s.checkpoint_lsn
+            ,   s.backup_finish_date
+            ,   s.database_backup_lsn
+            ,   s.is_copy_only
+            ,   CASE s.[type]
+                    WHEN 'D' THEN 'Database (Full)'
+                    WHEN 'I' THEN 'Database (Differential)'
+                    WHEN 'L' THEN 'Transaction Log'
+                    WHEN 'F' THEN 'File or Filegroup (Full)'
+                    WHEN 'G' THEN 'File or Filegroup (DIfferential)'
+                    WHEN 'P' THEN 'Partial (Full)'
+                    WHEN 'Q' THEN 'Partial (Differential)'
+                END AS backup_type
+            ,   s.recovery_model
+        FROM    msdb.dbo.backupset s RIGHT OUTER JOIN sys.databases d
+                ON s.database_name = d.name
+                AND s.recovery_model = d.recovery_model_desc
+        COLLATE SQL_Latin1_General_CP1_CI_AS
+), BackupHistFullIterations AS
+(
+    SELECT
+            server_name
+        ,   database_name
+        ,   backup_finish_date
+        ,   backup_type
+        ,   database_backup_lsn
+        ,   is_copy_only
+        ,   first_lsn
+        ,   last_lsn
+        ,   checkpoint_lsn
+        ,   physical_device_name
+        ,   ROW_NUMBER() OVER (PARTITION BY database_name ORDER BY backup_finish_date DESC) AS BackupIteration
+    FROM    BackupHist
+    WHERE   backup_type = 'Database (Full)'
+), BackupHistDiffIterations AS
+(
+    SELECT 
+            server_name
+        ,   database_name
+        ,   backup_finish_date
+        ,   backup_type
+        ,   database_backup_lsn
+        ,   is_copy_only
+        ,   first_lsn
+        ,   last_lsn
+        ,   checkpoint_lsn
+        ,   physical_device_name
+        ,   ROW_NUMBER() OVER (PARTITION BY database_name ORDER BY backup_finish_date DESC) AS BackupIteration
+    FROM    BackupHist
+    WHERE   backup_type = 'Database (Differential)'
+), BackupHistFullDiffRestores AS
+(
+        SELECT  *
+            ,   MAX(last_lsn) OVER (PARTITION BY base.database_name ORDER BY backup_finish_date DESC) AS recent_last_lsn
+            ,   ROW_NUMBER() OVER (PARTITION BY base.database_name ORDER BY backup_finish_date DESC) AS recent_bak_num
+        FROM (
+                SELECT  *
+                FROM    BackupHistFullIterations
+                WHERE   BackupIteration = 1 -- Show the most recent iteration
+
+                UNION ALL
+
+                -- Get most recent Differential based on Most Recent Full Backup if exists and most recent full is NOT a COPY-ONLY
+                SELECT  *
+                FROM    BackupHistDiffIterations d
+                WHERE   d.BackupIteration = 1
+                    AND d.database_backup_lsn = (   SELECT MAX(checkpoint_lsn)
+                                                FROM BackupHistFullIterations
+                                                WHERE BackupIteration = 1
+                                                    AND database_name = d.database_name
+                                                )
+            ) base
+)
+SELECT
+            server_name
+        ,   database_name
+        ,   backup_finish_date
+        ,   backup_type
+        ,   first_lsn
+        ,   last_lsn
+        ,   checkpoint_lsn
+        ,   is_copy_only
+        ,   CASE backup_type WHEN 'Database (Full)' THEN 'RESTORE DATABASE [' + database_name + '] FROM  ' + physical_device_name + ' WITH  FILE = 1, NORECOVERY, NOUNLOAD, REPLACE, STATS = 5'
+                WHEN 'Database (Differential)' THEN 'RESTORE DATABASE [' + database_name + '] FROM  ' + physical_device_name + ' WITH  FILE = 1, NORECOVERY, NOUNLOAD, STATS = 5'
+                WHEN 'Transaction Log' THEN 'RESTORE LOG [' + database_name + '] FROM  ' + physical_device_name + ' WITH  FILE = 1, NORECOVERY, NOUNLOAD, STATS = 5'
+                ELSE ''
+            END AS RestoreStatement
+FROM (
+    SELECT  fdr.server_name
+        ,   fdr.database_name
+        ,   fdr.backup_finish_date
+        ,   fdr.backup_type
+        ,   fdr.physical_device_name
+        ,   fdr.first_lsn
+        ,   fdr.last_lsn
+        ,   fdr.checkpoint_lsn
+        ,   fdr.database_backup_lsn
+        ,   fdr.is_copy_only
+    FROM    BackupHistFullDiffRestores fdr
+
+    UNION ALL
+
+    SELECT  bhlr.server_name
+        ,   bhlr.database_name
+        ,   bhlr.backup_finish_date
+        ,   bhlr.backup_type
+        ,   bhlr.physical_device_name
+        ,   bhlr.first_lsn
+        ,   bhlr.last_lsn
+        ,   bhlr.checkpoint_lsn
+        ,   bhlr.database_backup_lsn
+        ,   bhlr.is_copy_only
+    FROM    BackupHistFullDiffRestores bhfdr 
+            INNER JOIN BackupHist bhlr
+                ON bhfdr.database_name = bhlr.database_name
+                AND bhlr.last_lsn >= bhfdr.recent_last_lsn
+                AND bhfdr.recent_bak_num = 1
+    WHERE   bhlr.backup_type = 'Transaction Log'
+) restore_cmd
+ORDER BY 1, 2, 6
+
+
+
+
+----OR---
+
+-- Assign the database name to variable below
+DECLARE @db_name VARCHAR(100)
+SELECT @db_name = 'AdventureWorks2016'
+-- query
+SELECT TOP (30) s.database_name
+,m.physical_device_name
+,CAST(CAST(s.backup_size / 1000000 AS INT) AS VARCHAR(14)) + ' ' + 'MB' AS bkSize
+,CAST(DATEDIFF(second, s.backup_start_date, s.backup_finish_date) AS VARCHAR(4)) + ' ' + 'Seconds' TimeTaken
+,s.backup_start_date
+,CAST(s.first_lsn AS VARCHAR(50)) AS first_lsn
+,CAST(s.last_lsn AS VARCHAR(50)) AS last_lsn
+,CASE s.[type] WHEN 'D'
+THEN 'Full'
+WHEN 'I'
+THEN 'Differential'
+WHEN 'L'
+THEN 'Transaction Log'
+END AS BackupType
+,s.server_name
+,s.recovery_model
+FROM msdb.dbo.backupset s
+INNER JOIN msdb.dbo.backupmediafamily m ON s.media_set_id = m.media_set_id
+WHERE s.database_name = @db_name
+ORDER BY backup_start_date DESC
+,backup_finish_date
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
