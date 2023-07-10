@@ -80,10 +80,17 @@
         * ``Check Database integrity``
             * [DBCC CHECKDB](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-checkdb-transact-sql?view=sql-server-ver16)
             * [How to Automate the SQL Server DBCC CheckDB](https://www.sqlshack.com/automate-the-sql-server-dbcc-checkdb-command-using-maintenance-plans/)
-        * ``Reorganize Indexes``
-        * ``Rebuild Indexes``
+        * ``Reorganize and/or Rebuild Indexes``
+            * [Optimize Index maintenance](https://learn.microsoft.com/en-us/sql/relational-databases/indexes/reorganize-and-rebuild-indexes?view=sql-server-ver16)
+            * [Maintaining SQL Server indexes](https://www.sqlshack.com/maintaining-sql-server-indexes/)
+            * [Identify and resolve SQL Server Index Fragmentation](https://www.sqlshack.com/how-to-identify-and-resolve-sql-server-index-fragmentation/)
         * ``Update Statistics ( cannot be done on read only replica)``
+            * [UPDATE STATISTICS](https://learn.microsoft.com/en-us/sql/t-sql/statements/update-statistics-transact-sql?view=sql-server-ver16)
+            * [SQL Server Statistics](https://www.sqlshack.com/sql-server-statistics-and-how-to-perform-update-statistics-in-sql/)
         * ``Backup Database (Full/Log)  (Differential backup cannot be performed on the read-only database)``
+            * [Create a Full Database Backup](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/create-a-full-database-backup-sql-server?view=sql-server-ver16)
+            * [Create a Differential Database Backup](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/create-a-differential-database-backup-sql-server?view=sql-server-ver16)
+            * [Backup a Transaction Log](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/back-up-a-transaction-log-sql-server?view=sql-server-ver16)
         * ``Cleanup History from msdb if needed``
         * ``Shrink Database (It is recommended that you never execute this action as part of any regular maintenance as it leads to severe index fragmentation which can harm database performance.)``
 
