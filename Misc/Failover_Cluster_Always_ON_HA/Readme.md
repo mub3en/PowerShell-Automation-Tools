@@ -88,9 +88,18 @@
             * [UPDATE STATISTICS](https://learn.microsoft.com/en-us/sql/t-sql/statements/update-statistics-transact-sql?view=sql-server-ver16)
             * [SQL Server Statistics](https://www.sqlshack.com/sql-server-statistics-and-how-to-perform-update-statistics-in-sql/)
         * ``Backup Database (Full/Log)  (Differential backup cannot be performed on the read-only database)``
+            * [BACKUP (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/statements/backup-transact-sql?view=sql-server-ver16)
             * [Create a Full Database Backup](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/create-a-full-database-backup-sql-server?view=sql-server-ver16)
             * [Create a Differential Database Backup](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/create-a-differential-database-backup-sql-server?view=sql-server-ver16)
             * [Backup a Transaction Log](https://learn.microsoft.com/en-us/sql/relational-databases/backup-restore/back-up-a-transaction-log-sql-server?view=sql-server-ver16)
+            * [SQL Server Backup, Integrity Check, and Index and Statistics Maintenance](https://ola.hallengren.com/)
         * ``Cleanup History from msdb if needed``
+            * [MSDB SQL Database Maintenance and Cleanup](https://www.sqlshack.com/msdb-sql-database-maintenance-and-cleanup/)
+            * [Clear Backup History](https://sqlsolutionsgroup.com/how-to-clear-backup-history/) 
         * ``Shrink Database (It is recommended that you never execute this action as part of any regular maintenance as it leads to severe index fragmentation which can harm database performance.)``
+            * [Shrink a database](https://learn.microsoft.com/en-us/sql/relational-databases/databases/shrink-a-database?view=sql-server-ver16)
+            * [Shrink the tempdb database](https://learn.microsoft.com/en-us/sql/relational-databases/databases/shrink-tempdb-database?view=sql-server-ver16)   
+        * Shrink Database Log
+            * [DBCC SHRINKFILE (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-shrinkfile-transact-sql?view=sql-server-ver16)
+            * [How to shrink the transaction log](https://www.mssqltips.com/sqlservertutorial/3311/how-to-shrink-the-transaction-log/)  
 
