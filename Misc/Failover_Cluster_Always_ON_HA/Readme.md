@@ -78,6 +78,8 @@
 30. Setup a maint task
     * Typical maintenance tasks
         * ``Check Database integrity``
+            * [DBCC CHECKDB](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-checkdb-transact-sql?view=sql-server-ver16)
+            * [How to Automate the SQL Server DBCC CheckDB](https://www.sqlshack.com/automate-the-sql-server-dbcc-checkdb-command-using-maintenance-plans/)
         * ``Reorganize Indexes``
         * ``Rebuild Indexes``
         * ``Update Statistics ( cannot be done on read only replica)``
