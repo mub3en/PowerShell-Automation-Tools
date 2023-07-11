@@ -66,11 +66,11 @@
 
 25. Restore Database(s) and Set RECOVERY to FULL ✅
 26. Take a Full backup on a shared location ✅
-27. A SQL Login should have sysadmin access and should be an administrators ✅
+27. A SQL Login should have sysadmin access and should be a windows administrator ✅
 
 ``Failover Test``
 
-28. Test failing a server and see if t responds in an expected manner ✅
+28. Test failing a server and see if it responds in an expected manner ✅
 29. Primary replica if not configured as “Readable”, on Failover  when it becomes a secondary, it won’t be readable ✅
 
 ``Setting up Maintenance Plan``
