@@ -30,7 +30,6 @@ There can be two types of mirror servers: hot and warm. A hot mirror server has 
 
 [Step by step Guide](https://www.mssqltips.com/sqlservertip/6539/stepbystep-installation-of-sql-server-2019-on-a-windows-server-2019-failover-cluster-part-1/)
 
-
 ### 2 - Replication
 
 Replication can be used as a technology for coping and distributing data from one SQL Server database to another. Consistency is achieved by synchronizing. Replication of a SQL Server database can result in benefits like: load balancing, redundancy, and offline processing. Load balancing allows spreading data to a number of SQL Servers and distributing the query load among those SQL Servers. A replication consists of two components:
