@@ -15,7 +15,6 @@ because the number of columns returned might change and break your application.
 */
 
 
-
 --------------------------------------------------------------------------
 --------------------------------- INDEXES --------------------------------
 --------------------------------------------------------------------------
@@ -59,7 +58,7 @@ SELECT * FROM sys.dm_db_index_operational_stats (NULL, NULL, NULL, NULL)
 --Returns counts of different types of index operations and the time each type of operation was last performed.
 SELECT * FROM sys.dm_db_index_operational_stats 
 
-
+ 
 
 --------------------------------------------------------------------------
 ------------------------------- CACHED PLANS -----------------------------
@@ -124,7 +123,6 @@ SELECT * FROM sys.dm_resource_governor_configuration
 
 --Returns information about each request that is executing in SQL Server.
 SELECT * FROM sys.dm_exec_requests 
-
 
 ----ONLY works with Azure SQL DB
 --Returns CPU usage and storage data for an Azure SQL Database. 
