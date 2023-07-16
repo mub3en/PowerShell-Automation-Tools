@@ -4,7 +4,6 @@
 2. Download SQL Sever and Cumulative Package ✅
 3. Download Windows OS Images ✅
 
-
  ``If above mentioned steps are complete, start by creating:`` 
 
 4. Add a VM host that would be the Domain Controller (DC) ✅
@@ -37,7 +36,7 @@
 15. Split partition into 3 drives: ✅
     - SQL DATA 40 Gigs (D)
         - ``If letter D is already used by Shared Drive or DVD ROM, change the assigned letter first. Go to cmd:``
-              
+                     
            ```
            > DiskPart
            > List Volume
