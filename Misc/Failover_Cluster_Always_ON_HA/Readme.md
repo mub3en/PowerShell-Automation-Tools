@@ -74,7 +74,7 @@
 
 ``Setting up Maintenance Plan``
 
-30. Setup a maint task
+30. Setup a maint task ✅
     * Typical maintenance tasks
         * ``Check Database integrity``
             * [DBCC CHECKDB](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-checkdb-transact-sql?view=sql-server-ver16)
