@@ -319,3 +319,40 @@ GO
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
 --------------------------------------------------------------------------------
+
+
+
+--------------------------------------------------------------------------------
+------------------ General SQL Server & Database information -------------------
+--------------------------------------------------------------------------------
+
+--Ref Article: https://www.sqlservercentral.com/articles/building-a-database-dashboard-with-ssrs
+-- this can be a quick/good report via SSRS
+  
+USE master 
+GO 
+SELECT name 'Server Name' , product 'Product Name' ,data_source 'Data Source Name',s.modify_date 'Modified Date', 
+CASE WHEN is_linked =1 THEN 'Lineked Sever' WHEN is_linked=0 THEN 'Local Server' END 'Server Type' 
+FROM sys.servers s 
+
+
+SELECT      
+ Convert(varchar,SERVERPROPERTY('ServerName')) AS ServerName     
+ ,Convert(varchar,isnull(SERVERPROPERTY('InstanceName'), 'Default')) AS [SQLServer InstanceName]     
+ ,Convert(varchar,SUBSTRING(@@VERSION,0,CHARINDEX('(',@@VERSION)-1)) as [SQLServer Version]     
+ ,Convert(varchar,SERVERPROPERTY('EDITION')) AS [SQLServer Edition]    
+  ,Convert(varchar,SERVERPROPERTY('InstanceDefaultDataPath')) AS [Default DataPath]     
+ ,Convert(varchar,SERVERPROPERTY('InstanceDefaultLogPath')) AS [DEFAULT LogPath] 
+ ,Convert(varchar,iif(SERVERPROPERTY('IsIntegratedSecurityOnly') = 0, 'Windows and SQL Server Authentication', 'Windows Authentication')) AS [Authentication Type]     
+ ,cpu_count AS [Total Processor], 
+ round(physical_memory_kb / 1024.0 / 1024.0, 2) AS [Physical Memory_GB]     
+ ,sqlserver_start_time AS [LastStartTime], 
+ (select count(name) from sys.databases where database_id>4) as 'Count of Databases',     
+ (select count(name) from msdb..sysjobs where enabled=1) as 'Count of Jobs',     
+ (SELECT  count(1) FROM    msdb.dbo.sysjobhistory h          INNER JOIN msdb.dbo.sysjobs j     ON h.job_id = j.job_id  INNER JOIN msdb.dbo.sysjobsteps s              ON j.job_id = s.job_id  AND h.step_id = s.step_id     
+AND h.run_date > CONVERT(int     , CONVERT(varchar(10), DATEADD(DAY, -7, GETDATE()), 112)) and run_status = 0) 'Count of failed SQL Job'    
+FROM sys.dm_os_sys_info  ,sys.dm_os_windows_info  
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
