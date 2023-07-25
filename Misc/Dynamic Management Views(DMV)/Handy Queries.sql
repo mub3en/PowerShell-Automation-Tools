@@ -593,6 +593,8 @@ EXEC sp_help_revlogin
 --------------------------------------------------------------------------------
 
 /*
+Ref article: https://learn.microsoft.com/en-us/troubleshoot/sql/database-engine/performance/understand-resolve-blocking
+
 sys.dm_tran_active_transactions 
 The sys.dm_tran_active_transactions DMV contains data about open transactions that 
 can be joined to other DMVs for a complete picture of transactions awaiting commit or rollback. 
