@@ -359,7 +359,7 @@ FROM sys.dm_os_sys_info  ,sys.dm_os_windows_info
 
 
 --------------------------------------------------------------------------------
-------- Transfer logins and passwords between instances of SQL Serve -----------
+------- Transfer logins and passwords between instances of SQL Server ----------
 --------------------------------------------------------------------------------
 
 --Ref: https://learn.microsoft.com/en-us/troubleshoot/sql/database-engine/security/transfer-logins-passwords-between-instances
