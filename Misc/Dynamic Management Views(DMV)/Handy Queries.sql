@@ -636,3 +636,39 @@ CROSS APPLY sys.dm_exec_input_buffer(s.session_id, null) AS ib;
 --------------------------------------------------------------------------------
 
 
+
+--------------------------------------------------------------------------------
+--------------------- SQL Server Operating System Related ----------------------
+--------------------------------------------------------------------------------
+--Ref Article: https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sql-server-operating-system-related-dynamic-management-views-transact-sql?view=azuresqldb-current&viewFallbackFrom=sql-server-ver16
+
+--Monitoring parallel requests
+SELECT  
+    task_address,  
+    task_state,  
+    context_switches_count,  
+    pending_io_count,  
+    pending_io_byte_count,  
+    pending_io_byte_average,  
+    scheduler_id,  
+    session_id,  
+    exec_context_id,  
+    request_id,  
+    worker_address,  
+    host_address  
+  FROM sys.dm_os_tasks  
+  ORDER BY session_id, request_id;
+
+--Associating session IDs with Windows threads
+SELECT STasks.session_id, SThreads.os_thread_id  
+  FROM sys.dm_os_tasks AS STasks  
+  INNER JOIN sys.dm_os_threads AS SThreads  
+    ON STasks.worker_address = SThreads.worker_address  
+  WHERE STasks.session_id IS NOT NULL  
+  ORDER BY STasks.session_id;  
+GO
+
+
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
