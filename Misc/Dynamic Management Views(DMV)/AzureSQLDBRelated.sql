@@ -5,14 +5,18 @@ Diagnose and troubleshoot high CPU on Azure SQL Database
 
 */
 
---Identify vCore count with Transact-SQL
+------------------------------------------
+--Identify vCore count with Transact-SQL--
+------------------------------------------
 SELECT 
     COUNT(*) as vCores
 FROM sys.dm_os_schedulers
 WHERE status = N'VISIBLE ONLINE';
 GO
 
---Identify currently running queries with Transact-SQL
+--------------------------------------------------------
+--Identify currently running queries with Transact-SQL--
+    ----------------------------------------------------
 SELECT
     req.session_id,
     req.status,
@@ -47,6 +51,7 @@ FROM sys.dm_db_resource_stats
 ORDER BY end_time DESC; 
 GO
 
+    
 --Query the top recent 15 queries by CPU usage
 WITH AggregatedCPU AS 
     (SELECT
@@ -81,7 +86,9 @@ WHERE OD.RN<=15
 ORDER BY total_cpu_ms DESC;
 GO
 
---Query the most frequently compiled queries by query hash
+------------------------------------------------------------
+--Query the most frequently compiled queries by query hash--
+------------------------------------------------------------
 SELECT TOP (20)
     query_hash,
     MIN(initial_compile_start_time) as initial_compile_start_time,
