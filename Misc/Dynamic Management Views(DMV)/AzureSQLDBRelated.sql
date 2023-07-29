@@ -137,3 +137,15 @@ JOIN sys.query_store_query_text AS qt on q.query_text_id = qt.query_text_id
 JOIN sys.query_store_plan AS p ON qid.query_id=p.query_id and qid.query_plan_hash=p.query_plan_hash
 ORDER BY total_cpu_time_ms DESC;
 GO
+
+------------------------------------------------------------
+--Reduce CPU usage by tuning the max degree of parallelism--
+------------------------------------------------------------
+SELECT 
+    name, 
+    value, 
+    value_for_secondary, 
+    is_value_default 
+FROM sys.database_scoped_configurations
+WHERE name=N'MAXDOP';
+GO
