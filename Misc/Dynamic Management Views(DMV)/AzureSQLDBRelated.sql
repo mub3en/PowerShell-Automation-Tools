@@ -16,7 +16,7 @@ GO
 
 --------------------------------------------------------
 --Identify currently running queries with Transact-SQL--
-    ----------------------------------------------------
+--------------------------------------------------------
 SELECT
     req.session_id,
     req.status,
@@ -42,7 +42,9 @@ OUTER APPLY sys.dm_exec_query_statistics_xml(req.session_id) as qsx
 ORDER BY req.cpu_time desc;
 GO
 
---Review CPU usage metrics for the last hour
+----------------------------------------------
+--Review CPU usage metrics for the last hour--
+----------------------------------------------
 SELECT
     end_time,
     avg_cpu_percent,
@@ -51,8 +53,9 @@ FROM sys.dm_db_resource_stats
 ORDER BY end_time DESC; 
 GO
 
-    
---Query the top recent 15 queries by CPU usage
+------------------------------------------------ 
+--Query the top recent 15 queries by CPU usage--
+------------------------------------------------
 WITH AggregatedCPU AS 
     (SELECT
         q.query_hash, 
@@ -104,7 +107,9 @@ GROUP BY query_hash
 ORDER BY count_compiles DESC;
 GO
 
---Identify the CPU usage and query plan for a given query hash
+----------------------------------------------------------------
+--Identify the CPU usage and query plan for a given query hash--
+----------------------------------------------------------------
 declare @query_hash binary(8);
 
 SET @query_hash = 0x6557BE7936AA2E91;
