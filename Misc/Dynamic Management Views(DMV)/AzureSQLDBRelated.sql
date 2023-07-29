@@ -1,6 +1,6 @@
 /*
 Ref article: https://learn.microsoft.com/en-us/azure/azure-sql/database/high-cpu-diagnose-troubleshoot?view=azuresql-db
-
+Ref article: https://learn.microsoft.com/en-us/azure/azure-sql/database/monitoring-with-dmvs?view=azuresql-db
 Diagnose and troubleshoot high CPU on Azure SQL Database
 
 */
