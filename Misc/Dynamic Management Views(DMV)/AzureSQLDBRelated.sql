@@ -37,3 +37,12 @@ OUTER APPLY sys.dm_exec_query_plan(req.plan_handle) as qp
 OUTER APPLY sys.dm_exec_query_statistics_xml(req.session_id) as qsx
 ORDER BY req.cpu_time desc;
 GO
+
+--Review CPU usage metrics for the last hour
+SELECT
+    end_time,
+    avg_cpu_percent,
+    avg_instance_cpu_percent
+FROM sys.dm_db_resource_stats
+ORDER BY end_time DESC; 
+GO
