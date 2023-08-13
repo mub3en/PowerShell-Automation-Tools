@@ -7,14 +7,14 @@
  ``If above mentioned steps are complete, start by creating:`` 
 
 4. Add a VM host that would be the Domain Controller (DC) ✅
-5. One Primary Server and Required Number of [Replicas](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--generalize--a-windows-installation?view=windows-11) ✅
+5. One Primary Server and Required Number of Replicas ✅
     * Memory 2 Gigs and Storage 60 gigs for DC ✅
     * Memory 4 Gigs and Storage 100 gigs for ✅
   
 ``OR``
 
 6. Create Primary Server and Install SQL Server
-7. Clone Primary to make number of desired replicas. 
+7. [Clone](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--generalize--a-windows-installation?view=windows-11) Primary to make number of desired replicas. 
 
 ``Once VMWare and OS are installed``
 
