@@ -29,6 +29,52 @@
     * ``Set IPv4 Default gateway: 192.168.1.1 (from your ISP)``
     * ``Set IPv4 DNS Server: 192.168.1.1 (from your ISP)``
     * ``Set secondary IPv4 DNS Server: 192.168.1.1 (from your ISP - Optional)``
+<details>
+<Summary>PowerShell Code to update static IP:</Summary>
+
+```PowerShell:
+#get identity of the current user and verify if its an administrator 
+$CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+$TestAdmin = (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+
+if ($TestAdmin -eq $false) {
+    Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file "{0}" -elevated' -f ($MyInvocation.MyCommand.Definition))
+    exit $LASTEXITCODE
+}
+
+# Define the parameters
+$interfaceName = "Ethernet0"  # Change this to the name of your network interface
+$ipAddress = "192.168.1.200"  # Change this to the desired IP address
+$subnetMask = "255.255.255.0"  # Change this to the desired subnet mask
+$defaultGateway = "192.168.1.1"  # Change this to the desired default gateway
+$preferredDNS = "192.168.1.1"  # Change this to the preferred DNS server
+$alternateDNS = "127.0.0.1
+"  # Change this to the alternate DNS server (optional)
+
+# Get the network interface
+$networkInterface = Get-NetAdapter | Where-Object { $_.Name -eq $interfaceName }
+
+if ($networkInterface -eq $null) {
+    Write-Host "Network interface '$interfaceName' not found."
+    exit
+}
+
+# Set the IP address settings
+New-NetIPAddress -InterfaceIndex $networkInterface.InterfaceIndex -IPAddress $ipAddress -PrefixLength 24 -DefaultGateway $defaultGateway
+
+# Set the DNS server settings
+$dnsSettings = @{
+    InterfaceIndex = $networkInterface.InterfaceIndex
+    ServerAddresses = @($preferredDNS)
+}
+if ($alternateDNS) {
+    $dnsSettings.ServerAddresses += $alternateDNS
+}
+Set-DnsClientServerAddress @dnsSettings
+
+Write-Host "TCP/IPv4 settings changed successfully."
+```
+</details>
 11. Change Computer Name ✅
 12. Share Network Drive ✅
 13. Install Domain Controller Service on DC ✅
