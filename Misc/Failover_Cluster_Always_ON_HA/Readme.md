@@ -7,7 +7,7 @@
  ``If above mentioned steps are complete, start by creating:`` 
 
 4. Add a VM host that would be the Domain Controller (DC) ✅
-5. One Primary Server and Required Number of Replicas ✅
+5. One Primary Server and Required Number of [Replicas](https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/sysprep--generalize--a-windows-installation?view=windows-11) ✅
     * Memory 2 Gigs and Storage 60 gigs for DC ✅
     * Memory 4 Gigs and Storage 100 gigs for ✅
   
