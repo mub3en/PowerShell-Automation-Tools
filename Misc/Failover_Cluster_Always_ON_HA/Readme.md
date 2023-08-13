@@ -148,3 +148,8 @@ Write-Host "TCP/IPv4 settings changed successfully."
             * [DBCC SHRINKFILE (Transact-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/database-console-commands/dbcc-shrinkfile-transact-sql?view=sql-server-ver16)
             * [How to shrink the transaction log](https://www.mssqltips.com/sqlservertutorial/3311/how-to-shrink-the-transaction-log/)  
 
+
+
+
+# Ref Article
+1 - [SQL hack -  SQL Server Always On Availability Groups](https://www.sqlshack.com/a-comprehensive-guide-to-sql-server-always-on-availability-groups-on-windows-server-2016/)
