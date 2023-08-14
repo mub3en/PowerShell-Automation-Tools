@@ -30,7 +30,7 @@
     * ``Set IPv4 DNS Server: 192.168.1.1 (from your ISP)``
     * ``Set secondary IPv4 DNS Server: 192.168.1.1 (from your ISP - Optional)``
 <details>
-<Summary>PowerShell Code to update static IP:</Summary>
+<Summary>PowerShell code to update static IP:</Summary>
 
 ```PowerShell:
 #get identity of the current user and verify if its an administrator 
@@ -92,6 +92,121 @@ Write-Host "TCP/IPv4 settings changed successfully."
            
     - TempDB 10 Gigs (T)
     - Log 10 Gigs (L)
+<details>
+<Summary>Powershell code to rename/create partitions:"</Summary>
+ 
+ ```
+ $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+$TestAdmin = (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+
+if ($TestAdmin -eq $false) {
+    Start-Process powershell.exe -Verb RunAs -ArgumentList ('-noprofile -noexit -file "{0}" -elevated' -f ($MyInvocation.MyCommand.Definition))
+    exit $LASTEXITCODE
+}
+
+# Specify the percentage sizes for each partition
+$percentageC = 40
+$percentageD = 40
+$percentageL = 10
+$percentageT = 10
+
+# Specify the drive letter of the existing partition
+$existingDriveLetter = "C"
+
+# Get the existing partition details
+$existingPartition = Get-Partition -DriveLetter $existingDriveLetter
+
+if ($existingPartition -eq $null) {
+    Write-Host "Existing partition not found."
+    exit
+}
+
+
+# Get used drive letters for partitions and drives (excluding OS drive)
+$usedDriveLetters = (Get-Volume | Where-Object { $_.DriveType -eq 'Fixed' -and $_.DriveLetter -ne $existingDriveLetter }).DriveLetter
+$usedDriveLetters += (Get-WmiObject Win32_CDROMDrive).Drive
+
+
+# Check if drive letter "D" is used
+if ($usedDriveLetters -like "D*") {
+    # Check if drive letter "Z" is available
+    # if ($usedDriveLetters -contains "Z") {
+    #     Write-Host "Drive letter Z is already in use. Please free up the drive letter Z manually."
+    #     exit
+    # }
+    
+    # Get the CD/DVD-ROM drives
+    $cdDrives = Get-WmiObject Win32_CDROMDrive
+    
+    # Check if any CD/DVD-ROM drives are assigned drive letter "D"
+    $cdWithD = $cdDrives | Where-Object { $_.Drive -like "D*" }
+        if ($cdWithD) {
+        # Get the current drive letter and device ID of the CD/DVD-ROM drive
+        $currentDrive = $cdWithD.Drive
+        # $deviceID = $cdWithD.DeviceID
+
+        # Change the drive letter of the CD/DVD-ROM drive using DiskPart
+        $diskPartScript = @"
+        select volume $currentDrive
+        assign letter=Z
+"@
+        $diskPartScript | DiskPart
+        $usedDriveLetters = $usedDriveLetters -replace "D", "Z"
+    }
+    else {
+        Write-Host "Drive letter D is used, but no CD/DVD-ROM drives are assigned that letter."
+    }
+}
+
+# Calculate the sizes in bytes based on percentages
+$totalSizeBytes = $existingPartition.Size - 5300000
+$sizeCBytes = [math]::Floor($totalSizeBytes * ($percentageC / 100))
+$sizeDBytes = [math]::Floor($totalSizeBytes * ($percentageD / 100))
+$sizeLBytes = [math]::Floor($totalSizeBytes * ($percentageL / 100))
+
+# Calculate available space for the last partition
+$usedSpaceBytes = $sizeCBytes + $sizeDBytes + $sizeLBytes
+$availableSpaceBytes = $totalSizeBytes - $usedSpaceBytes
+$sizeTBytes = $availableSpaceBytes
+
+# Resize the existing partition to the desired size for C: (OS)
+Resize-Partition -DiskNumber $existingPartition.DiskNumber -PartitionNumber $existingPartition.PartitionNumber -Size $sizeCBytes
+
+# Specify the new drive letters and sizes for the partitions along with their desired names
+$partitions = @(
+    @{ DriveLetter = "D"; Size = $sizeDBytes; Name = "DATA" },
+    @{ DriveLetter = "L"; Size = $sizeLBytes; Name = "LOGS" },
+    @{ DriveLetter = "T"; Size = $sizeTBytes; Name = "TempDB" }
+)
+
+$existingVolumes = Get-Partition
+$maxPartitionNumber = ($existingVolumes | Measure-Object -Property PartitionNumber -Maximum).Maximum
+
+foreach ($partition in $partitions) {
+    $maxPartitionNumber++
+    
+    # Create the partition
+    $partitionSize = $partition.Size
+    $driveLetter = $partition.DriveLetter
+    $partitionNumber = $maxPartitionNumber
+
+    New-Partition -DiskNumber $existingPartition.DiskNumber -Size $partitionSize
+    $volume = Get-Partition -DiskNumber $existingPartition.DiskNumber -PartitionNumber $partitionNumber
+
+    # Format the partition with the desired drive letter
+    Format-Volume -Partition $volume -FileSystem NTFS -Confirm:$false -Force
+    $volume | Set-Partition -NewDriveLetter $driveLetter
+
+    # Rename the drive with the desired name
+    Set-Volume -DriveLetter $driveLetter -NewFileSystemLabel $partition.Name
+
+    Write-Host "Partition with drive letter $($partition.DriveLetter) created successfully and renamed to $($partition.Name)."
+}
+
+Write-Host "Partitions created successfully."
+ ```
+</details>
+
 16. Create SQLAdmin, SSIS, SSRS users in AZ directory ✅
 
 
