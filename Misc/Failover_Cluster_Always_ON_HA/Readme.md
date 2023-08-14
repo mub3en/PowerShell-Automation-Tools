@@ -93,9 +93,9 @@ Write-Host "TCP/IPv4 settings changed successfully."
     - TempDB 10 Gigs (T)
     - Log 10 Gigs (L)
 <details>
-<Summary>Powershell code to rename/create partitions:"</Summary>
+<Summary>Powershell code to rename/create partitions:</Summary>
  
- ```
+ ```PowerShell:
  $CurrentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
 $TestAdmin = (New-Object Security.Principal.WindowsPrincipal $CurrentUser).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
 
